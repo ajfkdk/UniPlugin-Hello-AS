@@ -45,6 +45,6 @@ public class DrawPicActivity extends Activity {
         }
         // 启动涂鸦页面
         DoodleActivity.startActivityOnly(DrawPicActivity.this, params);
-
+        finish();
     }
 }

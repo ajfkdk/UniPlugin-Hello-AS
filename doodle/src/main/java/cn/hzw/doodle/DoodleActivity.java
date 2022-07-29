@@ -1,5 +1,7 @@
 package cn.hzw.doodle;
 
+import static com.kevin.UCrop.REQUEST_CROP;
+
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
@@ -26,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenzhouli.doodle.R;
+import com.kevin.UCrop;
+import com.kevin.UCropActivity;
+import com.kevin.crop.util.UriUtil;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -137,7 +143,7 @@ public class DoodleActivity extends DoolBaseActivity {
     private View mEditBtn;
 
     private AlphaAnimation mViewShowAnimation, mViewHideAnimation; // view隐藏和显示时用到的渐变动画
-
+    //参数
     private DoodleParams mDoodleParams;
 
     // 触摸屏幕超过一定时间才判断为需要隐藏设置面板
@@ -165,6 +171,7 @@ public class DoodleActivity extends DoolBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         initImageLoader(DoodleActivity.this);
         StatusBarUtil.setStatusBarTranslucent(this, true, false);
         if (mDoodleParams == null) {
@@ -195,6 +202,7 @@ public class DoodleActivity extends DoolBaseActivity {
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.doodle_layout);
+        mFrameLayout = (FrameLayout) findViewById(R.id.doodle_container);
         TextView buttonBack = findViewById(R.id.doodle_selectable_bottom);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,9 +210,6 @@ public class DoodleActivity extends DoolBaseActivity {
                 mDoodleView.setEditMode(false);
             }
         });
-
-        mFrameLayout = (FrameLayout) findViewById(R.id.doodle_container);
-
         mDoodle = mDoodleView = new DoodleViewWrapper(this, bitmap, mDoodleParams.mOptimizeDrawing, new IDoodleListener() {
             @Override
             public void onSaved(IDoodle doodle, Bitmap bitmap, Runnable callback) { // 保存图片为jpg格式
@@ -547,7 +552,7 @@ public class DoodleActivity extends DoolBaseActivity {
                     oridinryDooDleDialog.setOnDialogClickListener(new OridinryDooDleDialog.OridinryDialogClick() {
                         @Override
                         public void sure() {
-                           finish();
+                            mDoodle.clear();
                         }
 
                         @Override
@@ -555,7 +560,7 @@ public class DoodleActivity extends DoolBaseActivity {
 
                         }
                     });
-                    oridinryDooDleDialog.show("确认退出?", "确定", "取消");
+                    oridinryDooDleDialog.show("是否清除当前画布?", "确定", "取消");
                 }
                 return true;
             }
@@ -626,15 +631,15 @@ public class DoodleActivity extends DoolBaseActivity {
                 oridinryDooDleDialog.setOnDialogClickListener(new OridinryDooDleDialog.OridinryDialogClick() {
                     @Override
                     public void sure() {
-                        finish();
+                        mDoodle.save();
                     }
 
                     @Override
                     public void noSure() {
-
+                        finish();
                     }
                 });
-                oridinryDooDleDialog.show("确定退出?", "确定", "取消");
+                oridinryDooDleDialog.show("是否保存当前画布?", "确定", "取消");
             }
         } else if (v.getId() == R.id.doodle_btn_rotate) {
             // 旋转图片
@@ -719,6 +724,18 @@ public class DoodleActivity extends DoolBaseActivity {
             mMosaicMenu.findViewById(R.id.btn_mosaic_level2).setSelected(false);
             if (mTouchGestureListener.getSelectedItem() != null) {
                 mTouchGestureListener.getSelectedItem().setColor(mDoodle.getColor().copy());
+            }
+        } else if (v.getId() == R.id.doodle_btn_crop) {
+//            裁剪功能的实现
+            Uri startUri = UriUtil.getUriFromPath(mDoodleParams.mImagePath);
+            if (startUri != null) {
+//                    关键入口，调用裁剪功能
+                UCrop uCrop = UCrop.of(startUri, startUri);
+//                UCrop uCrop = UCrop.of(startUri,null,filePath);
+                uCrop.withTargetActivity(UCropActivity.class);
+                uCrop.start(this, REQUEST_CROP);
+            } else {
+                Toast.makeText(this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
             }
         }
 //        隐藏按钮功能
@@ -1011,10 +1028,10 @@ public class DoodleActivity extends DoolBaseActivity {
                 Toast.makeText(DoodleActivity.this, R.string.doodle_edit_mode, Toast.LENGTH_SHORT).show();
                 mLastIsDrawableOutside = mDoodle.isDrawableOutside(); // save
                 mDoodle.setIsDrawableOutside(true);
-                mPenContainer.setVisibility(GONE);
-                mShapeContainer.setVisibility(GONE);
+//                mPenContainer.setVisibility(GONE);
+//                mShapeContainer.setVisibility(GONE);
                 mSizeContainer.setVisibility(GONE);
-                mColorContainer.setVisibility(GONE);
+//                mColorContainer.setVisibility(GONE);
                 mBtnUndo.setVisibility(GONE);
                 mMosaicMenu.setVisibility(GONE);
             } else {
@@ -1042,4 +1059,19 @@ public class DoodleActivity extends DoolBaseActivity {
             }
         }
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        裁剪后的回调
+        if (requestCode == REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+            finish();
+        } else {
+            final Throwable cropError = UCrop.getError(data);
+        }
+
+    }
+
+
+
 }

@@ -80,7 +80,7 @@
                             android:onClick="onClick"
                             android:scaleType="centerInside"
                             android:src="@drawable/doodle_ic_copy"
-                             />
+                            />
 
                         <ImageView
                             android:visibility="gone"
@@ -92,7 +92,7 @@
                             android:onClick="onClick"
                             android:scaleType="centerInside"
                             android:src="@drawable/doodle_ic_eraser"
-                             />
+                            />
 
                         <ImageView
                             android:id="@+id/btn_pen_text"
@@ -115,7 +115,7 @@
                             android:onClick="onClick"
                             android:scaleType="centerInside"
                             android:src="@drawable/doodle_ic_texture"
-                             />
+                            />
                     </LinearLayout>
 
                     <LinearLayout
@@ -391,7 +391,20 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/doodle_ic_move"
-                             />
+                            />
+                        <ImageView
+                            android:id="@+id/doodle_btn_crop"
+                            android:layout_width="@dimen/doodle_btn_pen_size"
+                            android:layout_height="@dimen/doodle_btn_pen_size"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="@dimen/doodle_margin"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/doodle_btn_effect_round"
+                            android:onClick="onClick"
+                            android:padding="5dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/crop"
+                            />
 
                         <FrameLayout
                             android:id="@+id/btn_set_color_container"
