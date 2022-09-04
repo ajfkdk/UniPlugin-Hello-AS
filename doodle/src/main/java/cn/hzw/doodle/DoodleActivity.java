@@ -727,16 +727,8 @@ public class DoodleActivity extends DoolBaseActivity {
             }
         } else if (v.getId() == R.id.doodle_btn_crop) {
 //            裁剪功能的实现
-            Uri startUri = UriUtil.getUriFromPath(mDoodleParams.mImagePath);
-            if (startUri != null) {
-//                    关键入口，调用裁剪功能
-                UCrop uCrop = UCrop.of(startUri, startUri);
-//                UCrop uCrop = UCrop.of(startUri,null,filePath);
-                uCrop.withTargetActivity(UCropActivity.class);
-                uCrop.start(this, REQUEST_CROP);
-            } else {
-                Toast.makeText(this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
-            }
+            Bitmap bitmap = mDoodle.saveAfterCrop();
+            mySave(bitmap);
         }
 //        隐藏按钮功能
 //        else if (v.getId() == R.id.doodle_btn_hide_panel) {
@@ -751,6 +743,51 @@ public class DoodleActivity extends DoolBaseActivity {
 //        }
     }
 
+    //    自定义保存图片
+    public void mySave(Bitmap bitmap) {
+        File doodleFile = null;
+        File file = null;
+        String savePath = mDoodleParams.mSavePath;
+        boolean isDir = mDoodleParams.mSavePathIsDir;
+        if (TextUtils.isEmpty(savePath)) {
+            File dcimFile = new File(Environment.getExternalStorageDirectory(), "DCIM");
+            doodleFile = new File(dcimFile, "Doodle");
+            //　保存的路径
+            file = new File(doodleFile, System.currentTimeMillis() + ".jpg");
+        } else {
+            if (isDir) {
+                doodleFile = new File(savePath);
+                //　保存的路径
+                file = new File(doodleFile, System.currentTimeMillis() + ".jpg");
+            } else {
+                file = new File(savePath);
+                doodleFile = file.getParentFile();
+            }
+        }
+        doodleFile.mkdirs();
+
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, outputStream);
+            ImageUtils.addImage(getContentResolver(), file.getAbsolutePath());
+            Uri startUri = UriUtil.getUriFromPath(mDoodleParams.mSavePath);
+            if (startUri != null) {
+//                    关键入口，调用裁剪功能
+                UCrop uCrop = UCrop.of(startUri, startUri);
+//                UCrop uCrop = UCrop.of(startUri,null,filePath);
+                uCrop.withTargetActivity(UCropActivity.class);
+                uCrop.start(this, REQUEST_CROP);
+            } else {
+                Toast.makeText(this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            Util.closeQuietly(outputStream);
+        }
+    }
     /**
      * 选择画笔的颜色
      */
@@ -830,6 +867,7 @@ public class DoodleActivity extends DoolBaseActivity {
 
         public DoodleViewWrapper(Context context, Bitmap bitmap, boolean optimizeDrawing, IDoodleListener listener, IDoodleTouchDetector defaultDetector) {
             super(context, bitmap, optimizeDrawing, listener, defaultDetector);
+
         }
 
         private Map<IDoodlePen, Integer> mBtnPenIds = new HashMap<>();

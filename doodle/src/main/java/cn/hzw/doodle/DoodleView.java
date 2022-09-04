@@ -769,18 +769,17 @@ public class DoodleView extends FrameLayout implements IDoodle {
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
-                mDoodleListener.onSaved(DoodleView.this, bitmap, new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mOptimizeDrawing) {
-                            refreshDoodleBitmap(false);
-                        }
-                        refresh();
+                mDoodleListener.onSaved(DoodleView.this, bitmap, () -> {
+                    if (mOptimizeDrawing) {
+                        refreshDoodleBitmap(false);
                     }
+                    refresh();
                 });
             }
         }.execute();
     }
+
+
 
     /**
      * 清屏
@@ -1339,5 +1338,9 @@ public class DoodleView extends FrameLayout implements IDoodle {
                 mShape.drawHelpers(canvas, DoodleView.this);
             }
         }
+    }
+    //    裁剪保存
+    public Bitmap saveAfterCrop() {
+        return mDoodleBitmap;
     }
 }

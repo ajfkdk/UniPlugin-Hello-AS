@@ -286,4 +286,10 @@ public interface IDoodle {
      */
     public void refresh();
 
+    /**
+     * 裁剪后保存
+     *
+     * @return**/
+    public Bitmap saveAfterCrop();
+
 }
