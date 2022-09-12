@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,8 @@ import cn.hzw.doodle.util.Util;
 import static cn.hzw.doodle.util.DrawUtil.drawCircle;
 import static cn.hzw.doodle.util.DrawUtil.drawRect;
 import static cn.hzw.doodle.util.DrawUtil.rotatePoint;
+
+import com.chenzhouli.ExeceptionTool.ResolveExeception;
 
 /**
  * 涂鸦框架
@@ -769,12 +772,16 @@ public class DoodleView extends FrameLayout implements IDoodle {
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
-                mDoodleListener.onSaved(DoodleView.this, bitmap, () -> {
-                    if (mOptimizeDrawing) {
-                        refreshDoodleBitmap(false);
-                    }
-                    refresh();
-                });
+                try {
+                    mDoodleListener.onSaved(DoodleView.this, bitmap, () -> {
+                        if (mOptimizeDrawing) {
+                            refreshDoodleBitmap(false);
+                        }
+                        refresh();
+                    });
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }.execute();
     }

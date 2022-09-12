@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenzhouli.ExeceptionTool.ResolveExeception;
 import com.chenzhouli.doodle.R;
 import com.kevin.UCrop;
 import com.kevin.UCropActivity;
@@ -38,6 +39,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -212,7 +214,7 @@ public class DoodleActivity extends DoolBaseActivity {
         });
         mDoodle = mDoodleView = new DoodleViewWrapper(this, bitmap, mDoodleParams.mOptimizeDrawing, new IDoodleListener() {
             @Override
-            public void onSaved(IDoodle doodle, Bitmap bitmap, Runnable callback) { // 保存图片为jpg格式
+            public void onSaved(IDoodle doodle, Bitmap bitmap, Runnable callback) throws FileNotFoundException { // 保存图片为jpg格式
                 File doodleFile = null;
                 File file = null;
                 String savePath = mDoodleParams.mSavePath;
@@ -238,7 +240,7 @@ public class DoodleActivity extends DoolBaseActivity {
                 try {
                     outputStream = new FileOutputStream(file);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 95, outputStream);
-                    ImageUtils.addImage(getContentResolver(), file.getAbsolutePath());
+//                    ImageUtils.addImage(getContentResolver(), file.getAbsolutePath());
                     Intent intent = new Intent();
                     intent.putExtra(KEY_IMAGE_PATH, file.getAbsolutePath());
                     setResult(Activity.RESULT_OK, intent);
@@ -246,6 +248,11 @@ public class DoodleActivity extends DoolBaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     onError(DoodleView.ERROR_SAVE, e.getMessage());
+//                   toast提示----------------滞留日志信息到本地----------------
+                    Toast.makeText(DoodleActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+//滞留日志信息到本地
+                    ResolveExeception.dumpExceptionToFile(e);
+                    throw e;
                 } finally {
                     Util.closeQuietly(outputStream);
                 }
@@ -595,7 +602,7 @@ public class DoodleActivity extends DoolBaseActivity {
 
     private ValueAnimator mRotateAnimator;
 
-    public void onClick(final View v) {
+    public void onClick(final View v) throws FileNotFoundException {
         if (v.getId() == R.id.btn_pen_hand) {
             mDoodle.setPen(DoodlePen.BRUSH);
         } else if (v.getId() == R.id.btn_pen_mosaic) {
@@ -744,7 +751,7 @@ public class DoodleActivity extends DoolBaseActivity {
     }
 
     //    自定义保存图片
-    public void mySave(Bitmap bitmap) {
+    public void mySave(Bitmap bitmap) throws FileNotFoundException {
         File doodleFile = null;
         File file = null;
         String savePath = mDoodleParams.mSavePath;
@@ -783,7 +790,7 @@ public class DoodleActivity extends DoolBaseActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-
+            throw e;
         } finally {
             Util.closeQuietly(outputStream);
         }
