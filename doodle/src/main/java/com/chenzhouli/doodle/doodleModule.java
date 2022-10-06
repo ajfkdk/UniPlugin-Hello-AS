@@ -129,7 +129,6 @@ public class doodleModule extends UniModule {
     @UniJSMethod(uiThread = true)
     public void requestMyPermission() {
         Activity pActivity = (Activity) mUniSDKInstance.getContext();
-        Toast.makeText(mUniSDKInstance.getContext(), "requestPermission:"+pActivity.toString(), Toast.LENGTH_LONG).show();
         requestPermission(pActivity);
     }
 
@@ -139,7 +138,6 @@ public class doodleModule extends UniModule {
     @UniJSMethod(uiThread = true)
     public void openPermissionPage() {
         Activity innerActivity=(Activity) mUniSDKInstance.getContext();
-        Toast.makeText(innerActivity, "open:"+innerActivity.toString(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
         intent.setData(Uri.parse("package:" + innerActivity.getApplication().getPackageName()));
         innerActivity.startActivityForResult(intent, REQUEST_CODE_P);
