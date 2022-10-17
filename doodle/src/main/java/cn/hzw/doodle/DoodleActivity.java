@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenzhouli.ExeceptionTool.ResolveExeception;
+import com.DataProvider.GloalData;
 import com.chenzhouli.doodle.R;
 import com.kevin.UCrop;
 import com.kevin.UCropActivity;
@@ -173,7 +174,6 @@ public class DoodleActivity extends DoolBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initImageLoader(DoodleActivity.this);
         StatusBarUtil.setStatusBarTranslucent(this, true, false);
         if (mDoodleParams == null) {
@@ -381,6 +381,14 @@ public class DoodleActivity extends DoolBaseActivity {
         mDoodle.setDoodleMaxScale(mDoodleParams.mMaxScale);
         initView();
         initListener();
+        TextView editButton = findViewById(R.id.doodle_selectable_edit);
+        TextView backToDoodleButton = findViewById(R.id.doodle_selectable_bottom);
+        TextView removeButton = findViewById(R.id.doodle_selectable_remove);
+
+
+        editButton.setText(GloalData.getLanguage() ?"Edit":"编辑");
+        backToDoodleButton.setText(GloalData.getLanguage()?"Back":"返回涂鸦");
+        removeButton.setText(GloalData.getLanguage()?"Remove":"移除");
     }
 
     public static void initImageLoader(Context context) {
@@ -425,7 +433,7 @@ public class DoodleActivity extends DoolBaseActivity {
             }
         });
         String desc = doodleText == null ? null : doodleText.getText();
-        editTextDoodleDialog.show("请输入文本", desc, "提交");
+        editTextDoodleDialog.show(GloalData.getLanguage()?"Input Text":"请输入文本", desc, GloalData.getLanguage()?"Submit":"提交");
         if (doodleText == null) {
             mSettingsPanel.removeCallbacks(mHideDelayRunnable);
         }
@@ -567,7 +575,7 @@ public class DoodleActivity extends DoolBaseActivity {
 
                         }
                     });
-                    oridinryDooDleDialog.show("是否清除当前画布?", "确定", "取消");
+                    oridinryDooDleDialog.show(GloalData.getLanguage()?"save the current picture?":"是否保存当前画布?", GloalData.getLanguage()?"comfirm":"确定", GloalData.getLanguage()?"cancel":"取消");
                 }
                 return true;
             }
@@ -646,7 +654,7 @@ public class DoodleActivity extends DoolBaseActivity {
                         finish();
                     }
                 });
-                oridinryDooDleDialog.show("是否保存当前画布?", "确定", "取消");
+                oridinryDooDleDialog.show(GloalData.getLanguage()?"save the current picture?":"是否保存当前画布?", GloalData.getLanguage()?"comfirm":"确定", GloalData.getLanguage()?"cancel":"取消");
             }
         } else if (v.getId() == R.id.doodle_btn_rotate) {
             // 旋转图片

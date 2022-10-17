@@ -2,7 +2,6 @@ package cn.hzw.doodle.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -12,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.DataProvider.GloalData;
 import com.chenzhouli.doodle.R;
 import cn.hzw.doodle.util.KeyBoardUtilDoo;
 
@@ -25,7 +25,6 @@ public class EditTextDoodleDialog {
     public Button btn_modify, btn_del_all;
     public TextView dialog_title;
     EditText et_username_edit;
-
     public EditTextDoodleDialog(final Activity context, int width, int height) {
         this.context = context;
         dialog = new Dialog(context, R.style.MyDialog_doodle);
@@ -37,7 +36,7 @@ public class EditTextDoodleDialog {
         et_username_edit = (EditText) dialog_view.findViewById(R.id.et_username_edit);
         dialog_title = (TextView) dialog_view.findViewById(R.id.tv_dialog_title);
         btn_del_all = (Button) dialog_view.findViewById(R.id.btn_del_all);
-
+        btn_del_all.setText(GloalData.getLanguage()?"Clear":"清空");
         btn_del_all.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

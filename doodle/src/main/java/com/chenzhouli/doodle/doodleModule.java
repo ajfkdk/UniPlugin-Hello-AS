@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.DataProvider.GloalData;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.hzw.doodle.DoodleActivity;
@@ -50,6 +51,17 @@ public class doodleModule extends UniModule {
         JSONObject jsonObj = new JSONObject();
         jsonObj.put("data", data);
         return jsonObj;
+    }
+
+    @UniJSMethod(uiThread = false)
+    public void changEnglish(Boolean isEnglish) {
+        GloalData.setLanguage(isEnglish);
+    }
+
+    @UniJSMethod(uiThread = false)
+    public void changEnglishWithToast(Boolean isEnglish) {
+        GloalData.setLanguage(isEnglish);
+        Toast.makeText(mWXSDKInstance.getContext(), "语言切换成功", Toast.LENGTH_SHORT).show();
     }
 
     @UniJSMethod(uiThread = true)

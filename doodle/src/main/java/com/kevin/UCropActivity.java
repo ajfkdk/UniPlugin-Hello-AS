@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.DataProvider.GloalData;
 import com.chenzhouli.doodle.R;
 import com.chenzhouli.mycrop.widget.AspectRatioTextView;
 import com.chenzhouli.mycrop.widget.HorizontalProgressWheelView;
@@ -75,7 +76,6 @@ public class UCropActivity extends AppCompatActivity {
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int[] mAllowedGestures = new int[]{UCrop.SCALE, UCrop.ROTATE, UCrop.ALL};
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +85,8 @@ public class UCropActivity extends AppCompatActivity {
         setupViews();
         setImageData(intent);
         setInitialState();
+        TextView topCropTitle= findViewById(R.id.toolbar_title);
+        topCropTitle.setText(GloalData.getLanguage() ? "Crop" : "裁剪");
     }
 
     @Override

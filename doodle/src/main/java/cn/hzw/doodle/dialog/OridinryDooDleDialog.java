@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.DataProvider.GloalData;
 import com.chenzhouli.doodle.R;
 
 
@@ -23,7 +25,6 @@ public class OridinryDooDleDialog {
     Button btn_no;
     public TextView dialog_title;
     public TextView view_text;
-
 
     public OridinryDooDleDialog(Context context, int width, int height) {
         this.context = context;
@@ -67,7 +68,7 @@ public class OridinryDooDleDialog {
     public void show(String content, String ok, String cacle) {
         try {
             view_text.setText(content);
-            dialog_title.setText("提示");
+            dialog_title.setText(GloalData.getLanguage() ? "Tips" : "提示");
             btn_sure.setText(ok);
             btn_no.setText(cacle);
             dialog.show();

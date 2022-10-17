@@ -19,6 +19,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.DataProvider.sayHelloUtle;
+
 import cn.hzw.doodle.DoodleActivity;
 import cn.hzw.doodle.DoodleParams;
 import cn.hzw.doodle.DoodleView;
@@ -27,7 +29,7 @@ public class DrawPicActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        new sayHelloUtle().sayHello();
         //获取上一级的传递参数
         Bundle bundle = getIntent().getExtras();
         String current_image_url = bundle.getString("imgPath");

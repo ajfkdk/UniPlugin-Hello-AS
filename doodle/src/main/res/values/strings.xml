@@ -18,7 +18,7 @@
     <string name="doodle_edit_mode">编辑模式</string>
 
 
-    <string name="ucrop_label_original" tools:ignore="DuplicateDefinition">原始比例</string>
+    <string name="ucrop_label_original" tools:ignore="DuplicateDefinition">normal</string>
     <string name="ucrop_label_edit_photo" tools:ignore="DuplicateDefinition">裁剪</string>
 
     <string name="label_sample">sample</string>
